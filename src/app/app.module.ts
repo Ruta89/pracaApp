@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -5,26 +6,43 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { PracaServiceProvider } from '../providers/praca-service/praca-service';
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+//import { AuthService } from './../providers/auth-service/auth-service2';
+import { HttpModule } from "@angular/http";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { environment } from '../environments/environment';
+import { AngularFireDatabaseModule } from "angularfire2/database";
+import { AngularFireAuthModule } from "angularfire2/auth";
+import { AngularFireModule } from "angularfire2/angularfire2";
+import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
+    AngularFireAuthModule,
+    HttpModule,
+    FormsModule,
+    MomentModule,
+    ReactiveFormsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    HomePage
+    MyApp
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PracaServiceProvider,
+    AuthServiceProvider,
+    //AuthService
   ]
 })
 export class AppModule {}

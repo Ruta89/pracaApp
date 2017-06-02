@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{data?.wll}} T {{data?.l1}} m</ion-title>
+    <!--<ion-buttons >
+      <button ion-button (click)="usunPoz(data?.$key)"><ion-icon name="trash"></ion-icon></button>
+    </ion-buttons>-->
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+       <small>Tolerancja min: <b>{{min}}</b> max:<b> {{max}}</b></small>
+    <p>WLL: <b>{{data?.wll}}</b></p>
+    <p>L1: <b>{{data?.l1}}</b></p>
+    <p>licznik: <b>{{data?.m}}</b></p>
+    <p>licznik obliczony <b>{{licz}}</b> </p>
+    <p>nici: <b>{{data?.nici}}</b></p>
+    <!--<p>auf: <b>{{data?.auf}}</b></p>-->
+    <p>auf: <b>{{aufFormat}}</b></p>
+    <p>ilosc: <b>{{data?.ilosc}}</b></p>
+    <p>data: <b>{{data?.date | date:"dd.MM.yy   HH:mm:ss"}}</b></p>
+    <!--<p>pozycjaId: {{idID}}</p>
+     <p>key: {{data?.$key}}</p>
+     <p>key: {{keyS}}</p>
+    <p>data? json: {{data|json}}</p>-->
+  </ion-card>
+   <button ion-button color="danger" (click)="usunPoz(keyS)">Usun</button>
+   <button ion-button color="primary" (click)="addNad(keyS, data.wll, data.l1)">dodaj naddatek</button>
+</ion-content>

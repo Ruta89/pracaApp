@@ -1,0 +1,145 @@
+<ion-header>
+  <ion-navbar color="zielony">
+    <ion-title>Praca {{ (user | async)?.uid }}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <div> {{ (user | async)?.uid }} </div>
+<div *ngIf="jestForm" >
+  <form [formGroup]="formGroupDodajPozycje" novalidate>
+    <div class="form-group">
+      <ion-item>
+        <ion-label floating>Tonaz</ion-label>
+        <ion-input type="number" [(ngModel)]="wll" formControlName="wll" required name="wll"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>L1</ion-label>
+        <ion-input type="number" [(ngModel)]="l1" formControlName="l1" required name="l1"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Licznik</ion-label>
+        <ion-input type="number" [(ngModel)]="m" formControlName="m" required name="m"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Nici</ion-label>
+        <ion-input type="text" [(ngModel)]="nici" formControlName="nici" required name="nici"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Zlecenie</ion-label>
+        <ion-input type="number" [(ngModel)]="auf" formControlName="auf" required name="auf"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Sztuk</ion-label>
+        <ion-input type="number" [(ngModel)]="ilosc" formControlName="ilosc" required name="ilosc"></ion-input>
+      </ion-item>
+    </div>
+    <div padding>
+      <button ion-button color="primary" type="submit" (click)="zapiszPozycje(wll, l1, m, nici, auf, ilosc)" [disabled]="formGroupDodajPozycje.pristine"
+        block>Zapisz</button>
+    </div>
+  </form>
+
+
+
+  <p>
+    <!--<ion-badge item-right>{{ formGroupDodajPozycje.status | json }}</ion-badge>
+    <ion-badge item-right *ngIf="formGroupDodajPozycje.valid" color="primary">{{ formGroupDodajPozycje.status | json }}</ion-badge>-->
+    <ion-badge item-right *ngIf="formGroupDodajPozycje.status == 'VALID'" color="primary">{{ formGroupDodajPozycje.status | json }}</ion-badge>
+    <ion-badge item-right *ngIf="formGroupDodajPozycje.status == 'INVALID'" color="danger">{{ formGroupDodajPozycje.status | json }}</ion-badge>
+    {{ formGroupDodajPozycje.value | json }}
+  </p>
+  <button ion-button block *ngIf="przyciskZamknij" (click)="zamknijForm()">Zamknij</button>
+  </div>
+
+
+
+  <!--<ion-buttons>
+    <button ion-button (click)="addNaddatek()">Dadaj Naddatek </button>
+    <button ion-button (click)="otworzPozycje()">Otworz pozycje</button>
+  </ion-buttons>-->
+
+  <div padding>
+    <ion-segment [(ngModel)]="segmentPraca">
+      <ion-segment-button value="pozycje">
+        Pozycje
+      </ion-segment-button>
+      <ion-segment-button value="naddatki">
+        Naddatki
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div [ngSwitch]="segmentPraca">
+    <ion-list *ngSwitchCase="'pozycje'">
+
+      <table>
+        <thead>
+          <tr>
+            <th>WLL</th>
+            <th>L1</th>
+            <th>Licz</th>
+            <th>Nici</th>
+            <th>Zlecenie</th>
+            <th>Ilosć</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pozycja of pozycje | async" (click)="openDetail(pozycja?.$key)">
+            <!--(click)="showOptionslistaPozycji(pozycja.$key, pozycja.auf)">-->
+
+            <td> <span>{{pozycja.wll}}</span> </td>
+
+            <td> <span>{{pozycja.l1}} </span> </td>
+
+
+            <td> <span>{{pozycja.m}} </span> </td>
+
+            <td> <span>{{pozycja.nici}}</span></td>
+
+
+            <td> <span>{{pozycja.auf}}</span></td>
+
+
+            <td> <span>{{pozycja.ilosc}}</span></td>
+
+            <td> <span>{{pozycja.date  | amDateFormat: 'HH:mm D/MM' }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'naddatki'">
+      <button ion-button (click)="addNaddatek()">Dodaj</button>
+      <table>
+        <thead>
+          <tr>
+            <th>tonaz</th>
+            <th>Długość</th>
+            <th>Maszyna</th>
+            <th>Naddatek</th>
+            <th>data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let naddatek of naddatki | async" (click)="showOptions(naddatek.$key, naddatek.title)">
+            <td> <span>{{naddatek.tonaz}}</span></td>
+            <td> <span>{{naddatek.dlugosc}}</span></td>
+            <td> <span>{{naddatek.maszyna}}</span></td>
+            <td> <span>{{naddatek.naddatek}}</span></td>
+            <td> <span>{{naddatek.timestamp  | amDateFormat: 'HH:mm DD-MM' }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </ion-list>
+  </div>
+  <button ion-button block *ngIf="przyciskDodaj"  (click)="pokaForm()">Dodaj</button>
+
+
+
+
+
+
+</ion-content>
