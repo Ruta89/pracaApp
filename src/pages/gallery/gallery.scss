@@ -1,3 +1,32 @@
 page-gallery {
-
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background: #fff;
+    }
+    div {
+        width: auto;
+        margin: 0 auto;
+        overflow: auto;
+    }
+    img {
+        max-height: 200px;
+    }
+    ul {
+        list-style-type: none;
+    }
+    li img {
+        float: left;
+        margin: 1px;
+    //    border: 2px solid #333;
+    //     -moz-transition: all 0.2s ease-in-out;
+    //     -webkit-transition: all 0.2s ease-in-out;
+    //     transition: all 0.2s ease-in-out;
+    }
+    // li img:hover {
+    //    border: 2px solid #F15123;
+    //     max-height: 250px;
+    // }
 }

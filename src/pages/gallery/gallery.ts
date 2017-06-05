@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { GalleryModal } from 'ionic-gallery-modal';
-import { ZoomableImage } from 'ionic-gallery-modal';
+//import  wagiImgArray from './wagiImgArray';
+//import { ZoomableImage } from 'ionic-gallery-modal';
 
 @IonicPage()
 @Component({
@@ -9,26 +10,111 @@ import { ZoomableImage } from 'ionic-gallery-modal';
   templateUrl: 'gallery.html',
 })
 export class GalleryPage {
-  private photos: any[] = [];
+  id: any;
+  //wagiImgArray: any[] = [];
+  wagiImgArray: Array<any> = [
+    {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController) {
-    this.createPhotos();
-  }
-
-  private createPhotos(length: number = 5) {
-    for (let i = 0; i < length; i++) {
-      this.photos.push({
-        url: `assets/images/${i}.jpg`,
-      });
+    },
+    {
+      "id": 1,
+      "title": "1 WLL",
+      "url": "assets/images/wagi/1t.jpg"
+    },
+    {
+      "id": 2,
+      "title": "2 WLL",
+      "url": "assets/images/wagi/2t.jpg"
+    },
+    {
+      "id": 3,
+      "title": "3 WLL",
+      "url": "assets/images/wagi/3t.jpg"
+    },
+    {
+      "id": 4,
+      "title": "4 WLL",
+      "url": "assets/images/wagi/4t.jpg"
+    },
+    {
+      "id": 5,
+      "title": "5 WLL",
+      "url": "assets/images/wagi/5t.jpg"
+    },
+    {
+      "id": 6,
+      "title": "6 WLL",
+      "url": "assets/images/wagi/6t.jpg"
+    },
+    {},
+    {
+      "id": 8,
+      "title": "8 WLL",
+      "url": "assets/images/wagi/8t.jpg"
+    },
+    {},
+    {
+      "id": 10,
+      "title": "10 WLL",
+      "url": "assets/images/wagi/10t.jpg"
+    },
+    {},
+    {
+      "id": 12,
+      "title": "12 WLL",
+      "url": "assets/images/wagi/12t.jpg"
+    },
+    {},{},
+    {
+            "id": 15,
+      "title": "15 WLL",
+      "url": "assets/images/wagi/15t.jpg"
+    },{},{},{},{},
+    {
+      "id": 20,
+      "title": "20 WLL",
+      "url": "assets/images/wagi/20t.jpg"
+    },{},{},{},{},
+    {
+      "id": 25,
+      "title": "25 WLL",
+      "url": "assets/images/wagi/25t.jpg"
+    },{},{},{},{},
+    {
+        "id": 30,
+      "title": "30 WLL",
+      "url": "assets/images/wagi/30t.jpg"
+    },{},{},{},{},{},{},{},{},{},
+    {
+        "id": 40,
+      "title": "40 WLL",
+      "url": "assets/images/wagi/40t.jpg"
+    },{},{},{},{},
+    {
+        "id": 45,
+      "title": "45 WLL",
+      "url": "assets/images/wagi/45t.jpg"
+    },{},{},{},{},
+    { 
+       "id": 50,
+      "title": "50 WLL",
+      "url": "assets/images/wagi/50t.jpg"
     }
+
+  ];
+  
+  constructor(public navCtrl: NavController, public navParams: NavParams, private modalCtrl: ModalController) {
+
   }
 
-  private openModal() {
-    let modal = this.modalCtrl.create(GalleryModal, {
-      photos: this.photos,
-      initialSlide: 1, // The second image
+  otworz(id) {
+    console.log("otworz id:   " + id);
+    let modalW = this.modalCtrl.create(GalleryModal, {
+      photos: this.wagiImgArray,
+      initialSlide: id, // potrzebuje kolejnosc tablicy zaczyna od 0
     });
-    modal.present();
+    modalW.present();
+    console.log("otworz id:   " + id);
   }
 
   ionViewDidLoad() {
