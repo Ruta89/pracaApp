@@ -12,36 +12,37 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 })
 
 export class MyApp {
-@ViewChild(Nav) nav: Nav;
+  @ViewChild(Nav) nav: Nav;
 
   rootPage: any;
   userId: any;
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{ title: string, component: any }>;
   currentUser
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public afAuth: AngularFireAuth, public authService: AuthServiceProvider) {
-    
+
     this.afAuth.authState.subscribe((user) => {
-    if(user){
-      this.currentUser = user.uid;
-      this.rootPage = 'HomePage';
-    } else {
-      this.rootPage = 'LoginPage';
-    }
+      if (user) {
+        this.currentUser = user.uid;
+        this.rootPage = 'HomePage';
+      } else {
+        this.rootPage = 'LoginPage';
+      }
     });
 
 
     this.initializeApp();
 
     this.pages = [
-      {title: 'Home', component: 'HomePage'},
-      {title: 'Praca', component: 'PracaPage'},
+      { title: 'Home', component: 'HomePage' },
+      { title: 'Praca', component: 'PracaPage' },
+      { title: 'Galeria', component: 'GalleryPage' }
     ];
 
- 
+
   }
 
-  initializeApp(){
-   this.platform.ready().then(() => {
+  initializeApp() {
+    this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();

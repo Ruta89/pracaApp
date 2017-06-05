@@ -16,10 +16,14 @@ import { AngularFireDatabaseModule } from "angularfire2/database";
 import { AngularFireAuthModule } from "angularfire2/auth";
 import { AngularFireModule } from "angularfire2/angularfire2";
 import { MomentModule } from 'angular2-moment';
+import { GalleryModal } from 'ionic-gallery-modal';
+import { ZoomableImage } from 'ionic-gallery-modal';
 
 @NgModule({
   declarations: [
     MyApp,
+    GalleryModal,
+    ZoomableImage
   ],
   imports: [
     BrowserModule,
@@ -34,15 +38,16 @@ import { MomentModule } from 'angular2-moment';
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,
+    GalleryModal
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     PracaServiceProvider,
     AuthServiceProvider,
     //AuthService
   ]
 })
-export class AppModule {}
+export class AppModule { }
