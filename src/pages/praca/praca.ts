@@ -47,7 +47,13 @@ export class PracaPage {
   jestForm: boolean = false;
   przyciskDodaj: boolean = true;
   przyciskZamknij: boolean = false;
-  resoult:any;
+  resoult: any;
+  mojNaddatek: any;
+  date:any;
+  timestamp: any;
+  dateNow: any;
+  naddatkiP: any;
+  p: any;
   constructor(private afAuth: AngularFireAuth,
     private toastCtrl: ToastController,
     public navCtrl: NavController,
@@ -59,9 +65,9 @@ export class PracaPage {
     private formBuilder: FormBuilder,
     private modalCtrl: ModalController,
     public afDB: AngularFireDatabase,
-     public authData: AuthServiceProvider) {
-  
-     
+    public authData: AuthServiceProvider) {
+
+    this.dateNow = new Date().toISOString();
     this.naddatki = pracaService.naddatki;
     this.pozycje = pracaService.pozycje;
     this.createForm();
@@ -70,13 +76,15 @@ export class PracaPage {
   getPozycja(id: string): FirebaseObjectObservable<any> {
     return this.pozycjaDetail = this.afDB.object('/userProfile/' + this.currentUser + '/listaPozycji/' + id);
   }
+  
 
-  pokaForm(){
+  pokaForm() {
     this.jestForm = true;
     this.przyciskDodaj = false;
     this.przyciskZamknij = true;
   }
-  zamknijForm(){
+
+  zamknijForm() {
     this.jestForm = false;
     this.przyciskDodaj = true;
     this.przyciskZamknij = false;
@@ -88,7 +96,7 @@ export class PracaPage {
       l1: ['', Validators.required],
       m: ['', Validators.required],
       nici: ['', Validators.required],
-      auf: [''],
+      auf: ['', Validators.required],
       ilosc: ['', Validators.required]
     });
   }
@@ -114,14 +122,14 @@ export class PracaPage {
       title: 'Wpisz naddatek',
       inputs: [
         {
-          name: 'tonaz',
+          name: 'wll',
           type: 'number',
-          placeholder: 'Tonaz'
+          placeholder: 'tonaz'
         },
         {
-          name: 'dlugosc',
+          name: 'l1',
           type: 'number',
-          placeholder: 'Dlugość'
+          placeholder: 'dlugosc'
         },
         {
           name: 'maszyna',
@@ -129,9 +137,9 @@ export class PracaPage {
           placeholder: 'maszyna'
         },
         {
-          name: 'naddatek',
+          name: 'mojNaddatek',
           type: 'number',
-          placeholder: 'Naddatek'
+          placeholder: 'mojNaddatek'
         }
       ],
       buttons: [
@@ -195,30 +203,31 @@ export class PracaPage {
   }
 
 
-  updateNaddatek(naddatekId, naddatekTonaz, naddatekDlugosc, naddatekMaszyna, naddatekNaddatek) {
+  updateNaddatek(id, naddatek) {
+    console.log("-- updateNaddatek przyjmuje id: " + id + " naddatek.l1: " + naddatek.l1);
     let prompt = this.alertCtrl.create({
       title: 'Aktualizacja danych',
       message: 'Wprowadz poprawki ',
       inputs: [
         {
-          name: 'tonaz',
+          name: 'wll',
           placeholder: "Tonaz",
-          value: naddatekTonaz
+          value: naddatek.wll
         },
         {
-          name: 'dlugosc',
+          name: 'l1',
           placeholder: "Dlugosc",
-          value: naddatekDlugosc
+          value: naddatek.l1
         },
         {
           name: 'maszyna',
           placeholder: "Maszyna",
-          value: naddatekMaszyna
+          value: naddatek.maszyna
         },
         {
-          name: 'naddatek',
+          name: 'mojNaddatek',
           placeholder: "Naddatek",
-          value: naddatekNaddatek
+          value: naddatek.mojNaddatek
         }
       ],
       buttons: [
@@ -229,9 +238,10 @@ export class PracaPage {
           }
         },
         {
-          text: 'Save',
+          text: 'Zapisz',
           handler: data => {
-            this.pracaService.updateNaddatek(data);
+            this.pracaService.updateNaddatek(id, data);
+            console.log(" id updateNaddatek" + id);
           }
         }
       ]
@@ -271,20 +281,22 @@ export class PracaPage {
 
 
 
-  showOptions(naddatekId, naddatekTonaz, naddatekDlugosc, naddatekMaszyna, naddatekNaddatek) {
+  showOptions(id, naddatek) {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Co chcesz zrobić?',
+      title: 'Wll: ' + naddatek.wll + ' , L1: ' + naddatek.l1 + ' - Co chcesz zrobić?',
       buttons: [
+        {
+          text: 'Uaktualnij naddatek',
+          handler: () => {
+            this.updateNaddatek(id, naddatek);
+            console.log(" --  this.updateNaddatek(id, naddatek.wll);" + id + '  ' + naddatek.wll);
+          }
+        },
         {
           text: 'Usuń naddatek',
           role: 'destructive',
           handler: () => {
-            this.pracaService.removeNaddatek(naddatekId);
-          }
-        }, {
-          text: 'Uaktualnij naddatek',
-          handler: () => {
-            this.updateNaddatek(naddatekId, naddatekTonaz, naddatekDlugosc, naddatekMaszyna, naddatekNaddatek);
+            this.pracaService.removeNaddatek(id);
           }
         }, {
           text: 'Anuluj',
@@ -311,7 +323,7 @@ export class PracaPage {
     if (this.pracaService.pozycje) {
       loading.dismiss();
     } else {
-       console.log('listaPozycji nie zostala zaladowana');
+      console.log('listaPozycji nie zostala zaladowana');
     }
 
 

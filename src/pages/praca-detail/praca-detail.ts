@@ -2,7 +2,6 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { PracaPage } from './../praca/praca';
-//import { PracaService } from "../../providers/praca-service";
 import { PracaServiceProvider } from '../../providers/praca-service/praca-service';
 import { AngularFireDatabase } from "angularfire2/database";
 import { AngularFireAuth } from "angularfire2/auth";
@@ -13,11 +12,11 @@ import { AngularFireAuth } from "angularfire2/auth";
     templateUrl: 'praca-detail.html',
 })
 export class PracaDetailPage {
-
+    currentUser: any;
+    date: any;
     idID: any;
     pozycja: any;
     poz: any;
-    currentUser: any;
     user: any;
     listaPozycji: any;
     pp: any;
@@ -48,29 +47,64 @@ export class PracaDetailPage {
     auf2: any;
     auf3: any;
     aufFormat: any;
-    maszyna:any;
-    naddatek:any;
-    pozLin2:any;
+    maszyna: any;
+    naddatek: any;
+    pozLin2: any;
+    dataN: any;
+    naddatekP: any;
+    dataND: any;
+    keyN: any;
+    idNid: any;
+    timestamp: any;
+    dateUpdate: any;
     constructor(public authService: AuthServiceProvider, public afAuth: AngularFireAuth, public afDb: AngularFireDatabase, public navCtrl: NavController, public navParams: NavParams, public pracaService: PracaServiceProvider, public alertCtrl: AlertController) {
         this.idID = this.navParams.get('id');
-
-
 
         this.currentUser = this.afAuth.auth.currentUser.uid;
         this.userProf = afDb.list('/userProfile/' + this.currentUser);
         this.lp = this.afDb.list('/listaPozycji/');
 
         this.pozLin = afDb.list('/userProfile/' + this.currentUser + '/listaPozycji/');
-        this.pozLin2 = this.afDb.list('/userProfile/' + this.currentUser + '/listaPozycji/');
+        // this.pozLin2 = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/');
         this.item = afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idID, { preserveSnapshot: true });
         this.item.subscribe(snapshot => {
             this.data = snapshot.val();
             this.keyS = snapshot.key;
         });
-        this.listaPozycji = pracaService.getPozycje();
+
     }
 
     ionViewDidLoad() {
+
+        if (this.data.idN) {
+            this.idNid = this.data.idN;
+            console.log("jest idN this.idN  " + this.idNid + "  jest idN this.data.idN  " + this.data.idN);
+            this.naddatekP = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idNid, { preserveSnapshot: true });
+            this.naddatekP.subscribe(snapshot => {
+                console.log(snapshot.val());
+                this.dataND = snapshot.val();
+                this.keyN = snapshot.key;
+            });
+            if (this.data.idN) {
+                this.idNid = this.data.idN;
+                console.log("jest idN this.idN  " + this.idNid + "  jest idN this.data.idN  " + this.data.idN);
+                this.naddatekP = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idNid, { preserveSnapshot: true });
+                this.naddatekP.subscribe(snapshot => {
+                    console.log(snapshot.val());
+                    this.dataND = snapshot.val();
+                    this.keyN = snapshot.key;
+                });
+                console.log(this.dataND);
+                console.log("this.naddatekP  " + this.naddatekP);
+            } else {
+                console.log("niema idN");
+            }
+
+        } else {
+            console.log("niema idN");
+        }
+
+
         console.log('ionViewDidLoad PracaDetailPage');
 
         // ustawianie tolerancji
@@ -115,45 +149,132 @@ export class PracaDetailPage {
         });
     }
 
-       addNad( id, wll, l1, data) {
+    addNaddDetail(keyS, data) {
         let prompt = this.alertCtrl.create({
-      title: 'Wpisz naddatek'+ this.data.wll+'id '+id,
-      inputs: [
-        {
-          name: 'maszyna',
-          type: 'text',
-          placeholder: 'maszyna'
-        },
-        {
-          name: 'naddatek',
-          type: 'number',
-          placeholder: 'Naddatek'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Anuluj',
-          handler: data => {
-            // console.log('Anulowales dodanie naddatku');
-          }
-        },
-        {
-          text: 'Zapisz',
-          handler:  (data) =>{
-    this.pracaService.zapiszNad(id, wll,l1,data);
-          }
-        //       data => { 
-        //       this.pozLin2.push({id: keyS,l1:this.l1, wll: wll, maszyna: data.maszyna, naddatek: data.naddatek}).then(()=>{
-        //           console.log(l1+wll+ data.maszyna+data.naddatek);
-        //       }).catch((error) =>{
-        //           console.log(error);
-        //       });
-        //    // this.pracaService.zapiszNad(this.maszyna, this.naddatek, this.keyS, this.wll, this.l1);
-        //   }
-        }
-      ]
-    });
-    prompt.present();
+            title: 'keyS to id: poz ' + keyS + ' ' + data.wll + ', l1: ' + data.l1,
+            inputs: [
+                {
+                    name: 'maszyna',
+                    type: 'text',
+                    placeholder: 'Maszyna'
+                },
+                {
+                    name: 'mojNaddatek',
+                    type: 'number',
+                    placeholder: 'Naddatek'
+                },
+                {
+                    name: 'notatka',
+                    type: 'text',
+                    placeholder: 'Notatka'
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Anuluj',
+                    handler: (dataN) => {
+                        console.log('Anulowales dodanie naddatku' + dataN);
+                    }
+                },
+                {
+                    text: 'Zapisz',
+                    handler: (dataN) => {
+                        this.pracaService.addNaddDetailS(keyS, data, dataN);
+                    }
+                }
+            ]
+        });
+        prompt.present();
     }
 
+    addNad(keyS, data) {
+        let prompt = this.alertCtrl.create({
+            title: 'keyS to id: poz ' + keyS + ' Wpisz naddatek wll: ' + data.wll + ', l1: ' + data.l1,
+            inputs: [
+                {
+                    name: 'maszyna',
+                    type: 'text',
+                    value: data.maszyna
+                },
+                {
+                    name: 'naddatek',
+                    type: 'number',
+                    value: data.naddatek
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Anuluj',
+                    handler: (data) => {
+                        console.log('Anulowales dodanie naddatku' + data);
+                    }
+                },
+                {
+                    text: 'Zapisz',
+                    handler: (data) => {
+                        this.pracaService.updateNaddatek(keyS, data);
+                        return data.idN;
+                    }
+                }
+            ]
+        });
+        prompt.present();
+    }
+
+    updatePozycja(keyS, data) {
+        let prompt = this.alertCtrl.create({
+            title: 'Update  ' + keyS + ' ' + data.wll + '  ' + data.l1,
+            inputs: [
+                {
+                    name: 'wll',
+                    type: 'text',
+                    value: data.wll
+                },
+                {
+                    name: 'l1',
+                    type: 'number',
+                    value: data.l1
+                }
+                ,
+                {
+                    name: 'm',
+                    type: 'number',
+                    value: data.m
+                },
+                {
+                    name: 'nici',
+                    type: 'number',
+                    value: data.nici
+                },
+                {
+                    name: 'auf',
+                    type: 'number',
+                    value: data.auf
+                },
+                {
+                    name: 'ilosc',
+                    type: 'number',
+                    value: data.ilosc
+                }
+            ],
+            buttons: [
+                {
+                    text: 'Anuluj',
+                    handler: data => {
+                        console.log('Anulowales uaktualnienia pozycji');
+                    }
+                },
+                {
+                    text: 'Zapisz',
+                    handler: data => {
+                        this.pracaService.updatePozycja(keyS, data);
+                        console.log(" keyS czyli id updatePozycja " + keyS);
+                    }
+                }
+            ]
+        });
+        prompt.present();
+    }
 }
+
+

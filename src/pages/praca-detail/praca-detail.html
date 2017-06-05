@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{data?.wll}} T {{data?.l1}} m</ion-title>
+    <ion-title>{{data?.wll}} T {{data?.l1}} m <small>{{data?.id}}</small></ion-title>
     <!--<ion-buttons >
       <button ion-button (click)="usunPoz(data?.$key)"><ion-icon name="trash"></ion-icon></button>
     </ion-buttons>-->
@@ -9,21 +9,30 @@
 
 <ion-content padding>
   <ion-card>
-       <small>Tolerancja min: <b>{{min}}</b> max:<b> {{max}}</b></small>
-    <p>WLL: <b>{{data?.wll}}</b></p>
-    <p>L1: <b>{{data?.l1}}</b></p>
+    <small>Tolerancja min: <b>{{min}}</b> max:<b> {{max}}</b></small>
+    <p>Tonaż: <b>{{data?.wll}}</b></p>
+    <p>Długość: <b>{{data?.l1}}</b></p>
     <p>licznik: <b>{{data?.m}}</b></p>
-    <p>licznik obliczony <b>{{licz}}</b> </p>
-    <p>nici: <b>{{data?.nici}}</b></p>
+    <p>licz oblic <b>{{licz}}</b> </p>
+    <p>Nici: <b>{{data?.nici}}</b></p>
     <!--<p>auf: <b>{{data?.auf}}</b></p>-->
-    <p>auf: <b>{{aufFormat}}</b></p>
-    <p>ilosc: <b>{{data?.ilosc}}</b></p>
-    <p>data: <b>{{data?.date | date:"dd.MM.yy   HH:mm:ss"}}</b></p>
-    <!--<p>pozycjaId: {{idID}}</p>
-     <p>key: {{data?.$key}}</p>
-     <p>key: {{keyS}}</p>
-    <p>data? json: {{data|json}}</p>-->
+    <p>Zlecenie: <b>{{aufFormat}}</b></p>
+    <p>Ilosc: <b>{{data?.ilosc}}</b></p>
+    <p *ngIf="data?.date">Dodano: <b>{{data?.date | date:"HH:mm     dd.MM.yy"}}</b></p>
+    <!--blad wyskakuje przy usuwaniu data timestamp-->
+    <p *ngIf="data?.timestamp">Dodano: <b>{{data?.timestamp | date:"HH:mm  dd.MM.yy"}}</b></p>
+    <p *ngIf="data?.dateUpdate">Zmodyf: <b>{{data?.dateUpdate | date:"HH:mm     dd.MM.yy"}}</b></p>
   </ion-card>
-   <button ion-button color="danger" (click)="usunPoz(keyS)">Usun</button>
-   <button ion-button color="primary" (click)="addNad(keyS, data.wll, data.l1)">dodaj naddatek</button>
+  <button ion-button color="danger" (click)="usunPoz(keyS)">Usun</button>
+  <button *ngIf="!data?.idN" ion-button color="primary" (click)="addNaddDetail(keyS, data)">Dodaj naddatek</button>
+  <button ion-button color="primary" (click)="updatePozycja(keyS, data)">Uaktualnij pozycje</button>
+
+  <ion-list>
+    <ion-item>
+      // Todo Jeżeli jest naddatek dodany w tej pozycji to pokazać
+      <p *ngIf="data?.idN">idN: <b>{{data?.idN}}</b></p>
+      <p *ngIf="dataND?.naddatek">dataND?.naddatek: <b>{{dataND?.naddatek}}</b></p>
+    </ion-item>
+  </ion-list>
+
 </ion-content>

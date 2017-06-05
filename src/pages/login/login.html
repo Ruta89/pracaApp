@@ -9,15 +9,15 @@
 
   <ion-item>
     <ion-label floating>Adres email</ion-label>
-    <ion-input type="text" [(ngModel)]="user.email"></ion-input>
+    <ion-input type="text" [(ngModel)]="email"></ion-input>
   </ion-item>
 
     <ion-item>
     <ion-label floating>Haslo</ion-label>
-    <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
   </ion-item>
 
-  <button ion-button submit (click)="login(user)">Loguj</button>
+  <button ion-button submit (click)="login(email, password)">Loguj</button>
   <button ion-button color="light" (click)="register()">Rejestruj</button>
 
 </ion-content>

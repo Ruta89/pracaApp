@@ -1,6 +1,6 @@
 
 //import { AuthService } from './../auth-service/auth-service2';
-import { AuthServiceProvider } from './../auth-service/auth-service';
+import { AuthServiceProvider } from '../auth-service/auth-service';
 
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
 import * as firebase from 'firebase/auth';
-import moment from 'moment';
+//import moment from 'moment';
 
 @Injectable()
 export class PracaServiceProvider {
@@ -35,29 +35,33 @@ export class PracaServiceProvider {
     pf: any;
     date: any;
     uid: any;
-    dzisiaj: any;
     authState: any = null;
     user: any;
-
-    constructor(public afAuth: AngularFireAuth, public http: Http, public afDb: AngularFireDatabase, private aauth: AuthServiceProvider) {
-
+    userId: any;
+    auth: any;
+    mojNaddatek: any;
+    naddatekDetail: any;
+    idPozycji: any;
+    idN: any;
+    itemsN: any;
+    naddatekP: any;
+    dataN: any;
+    constructor(public afAuth: AngularFireAuth, public http: Http, public afDb: AngularFireDatabase, public authService: AuthServiceProvider) {
+        this.auth = this.authService.authenticated;
         //this.user = this.afAuth.authState
         // ponizej wywala blad ze nie ma uid
-        this.currentUser = this.afAuth.auth.currentUser.uid;
-        console.log("this.currentUser musi byc -------------------------------------   ", this.currentUser);
-        this.dzisiaj = Date.now();
-        this.pozycje = afDb.list('/userProfile/' + this.currentUser + '/listaPozycji', {
+        this.currentUser = this.afAuth.auth.currentUser;
+        this.userId = this.currentUser.uid;
+        console.log("this.this.userId musi byc -------------------------------------   " + this.userId);
+        this.pozycje = afDb.list('/userProfile/' + this.userId + '/listaPozycji', {
             query: {
                 limitToLast: 24
             }
         }).map((array) => array.reverse()) as FirebaseListObservable<any[]>;
-        this.naddatki = afDb.list(`userProfile/${this.currentUser}/naddatki`);
+        this.naddatki = afDb.list(`/userProfile/${this.userId}/naddatki`);
     }
 
-    // Returns true if user is logged in
-  get authenticated(): boolean {
-    return this.authState !== null;
-  }
+
 
 
     // getPozycja(pozycjaId: string): FirebaseObjectObservable<any> {
@@ -65,13 +69,19 @@ export class PracaServiceProvider {
     // }
 
     getPozycja(id: string): FirebaseObjectObservable<any> {
-        return this.pozycjaDetail = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji' + id);
+        return this.pozycjaDetail = this.afDb.object('/userProfile/' + this.userId + '/listaPozycji' + id);
     }
 
     getPozycje() {
         //return this.afDb.list('/userProfile/' + this.currentUser + '/listaPozycji/');
         return this.pozycje;
 
+    }
+    getNaddatki() {
+        return this.naddatki;
+    }
+    getNaddatek(id: string) {
+        return this.naddatekDetail = this.afDb.object('/userProfile/' + this.userId + '/naddatki' + id);
     }
     // pokaPozycje(): Promise<any> {
     //     return new Promise((resolve, reject) => {
@@ -89,10 +99,6 @@ export class PracaServiceProvider {
     //     return this.pozycje;
     // }
 
-    get GetNaddatki() {
-        return this.naddatki;
-    }
-
     savePozycja(wll, l1, m, nici, auf, ilosc) {
         this.pozycje.push({
             wll: wll,
@@ -101,8 +107,8 @@ export class PracaServiceProvider {
             nici: nici,
             auf: auf,
             ilosc: ilosc,
-            //date: new Date().toISOString()
-            date: moment().format()
+            date: new Date().toISOString()
+            //timestamp: moment().format()
         });
     }
 
@@ -115,6 +121,7 @@ export class PracaServiceProvider {
             auf: auf,
             ilosc: ilosc,
             date: new Date().toISOString()
+            //timestamp: new Date().toISOString()
         }).then(nowaPozycja => {
             //console.log('Zapisana pozycja' + wll, l1, m, nici, auf, ilosc);
             console.log("modal dodaj pozycje: nowaPozycja  " + nowaPozycja);
@@ -128,13 +135,13 @@ export class PracaServiceProvider {
     //tonaz: number, dlugosc: number, maszyna: string, naddatek: number, timestamp: string
     zapiszNaddatek(data) {
         this.naddatki.push({
-            tonaz: data.tonaz,
-            dlugosc: data.dlugosc,
+            wll: data.wll,
+            l1: data.l1,
             maszyna: data.maszyna,
-            naddatek: data.naddatek,
-            timestamp: new Date().toISOString()
+            mojNaddatek: data.mojNaddatek,
+            date: new Date().toISOString()
         }).then((data) => {
-            console.log("praca service.then((data) => {  " + data);
+            console.log("praca service zapiszNaddatek data.l1  " + data.l1);
         }).catch((error) => {
             console.log("praca service, metoda addNaddatek .catch((error) => {  " + error);
         });
@@ -143,25 +150,75 @@ export class PracaServiceProvider {
     //detailPage
     zapiszNad(id, wll, l1, data) {
 
-        this.afDb.list('userProfile/' + this.currentUser + '/naddatki/' + id).push({
+        this.afDb.list('userProfile/' + this.userId + '/naddatki/').push({
+            idPoz: id,
             wll: wll,
             l1: l1,
             maszyna: data.maszyna,
-            naddatek: data.naddatek,
+            mojNaddatek: data.mojNaddatek,
             timestamp: new Date().toISOString()
         }).then((data) => {
-            console.log("praca service.then((data) => {  " + wll);
+            console.log("praca service zapiszNad  wll  " + wll);
         }).catch((error) => {
             console.log("praca service, metoda addNaddatek .catch((error) => {  " + error);
         });
     }
 
-    updateNaddatek(data) {                     // badz this.
-        this.naddatki.update(data.naddatekId, {
-            tonaz: data.tonaz,
-            dlugosc: data.dlugosc,
+    addNaddDetailS(keyS, data, dataN) {
+        this.naddatki.push({
+            wll: data.wll,
+            l1: data.l1,
+            maszyna: dataN.maszyna,
+            mojNaddatek: dataN.mojNaddatek,
+            notatka: dataN.notatka,
+            date: new Date().toISOString(),
+            idPozycji: keyS
+        }).then((dane) => {
+
+            console.log(" -- dane.key to beedzie key dodawanego naddatku ? :) " + dane.key);
+            console.log(" keyS to bedzie key pozycji  " + keyS);
+
+            this.pozycje.update(keyS, {
+                dateUpdate: new Date().toISOString(),
+                idN: dane.key
+            }).then(() => {
+                console.log("zaktualizowano pozycję o klucz do tego naddatku");
+            }).catch((error) => {
+                console.log("błąd addNaddDetailS 1:  " + error);
+            });
+
+
+        }).catch((error) => {
+            console.log("błąd addNaddDetailS 2:  " + error);
+        });
+
+
+
+    }
+
+    updateNaddatek(id, data) {
+        console.log("updateNaddatek jest id? " + id);
+
+
+        this.naddatki.update(id, {
+            wll: data.wll,
+            l1: data.l1,
             maszyna: data.maszyna,
-            naddatek: data.naddatek
+            mojNaddatek: data.mojNaddatek
+        });
+    }
+
+    updatePozycja(id, data) {
+        console.log("updatePozycja jest id? " + id);
+
+        this.pozycje.update(id, {
+            wll: data.wll,
+            l1: data.l1,
+            m: data.m,
+            nici: data.nici,
+            auf: data.auf,
+            ilosc: data.ilosc,
+            dateUpdate: new Date().toISOString()
         });
     }
 
