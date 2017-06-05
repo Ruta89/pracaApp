@@ -1,5 +1,10 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
+# 
+# git rm -rf --cached .
+# git add .
+# add environments
+# now gitignore work
 
 *~
 *.sw[mnpcod]
@@ -12,7 +17,7 @@ log.txt
 .vscode/
 npm-debug.log*
 
-src/environments/environment.ts
+src/environments/
 .idea/
 .sass-cache/
 .tmp/
