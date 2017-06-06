@@ -12,11 +12,11 @@
 
   <p>Planuje dodac tu galerie wszystkich zdjec (naddatkow, itp z pracy).</p>
 
-  <!--<button ion-button (click)="openModal()">Otwórz</button>-->
-
   <div>
-    <ul>
-      <li  *ngFor="let waga of wagiImgArray"><img (click)="otworz(waga.id)" src="{{waga.url}}" alt="{{waga.title}}"></li>
+    <ul *ngFor="let waga of wagiArray; let i = index">
+      <li *ngIf="waga?.url">
+        <img (click)="otworz(waga.id)" src="assets/images/wagi/small/{{waga.id}}t.jpg" alt="{{waga.title}}" />
+      </li>
     </ul>
   </div>
 

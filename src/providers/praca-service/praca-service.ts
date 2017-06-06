@@ -34,8 +34,7 @@ export class PracaServiceProvider {
     p: any;
     pf: any;
     date: any;
-    uid: any;
-    authState: any = null;
+    authState: any;
     user: any;
     userId: any;
     auth: any;
@@ -46,13 +45,17 @@ export class PracaServiceProvider {
     itemsN: any;
     naddatekP: any;
     dataN: any;
+    pozycja: any;
+
     constructor(public afAuth: AngularFireAuth, public http: Http, public afDb: AngularFireDatabase, public authService: AuthServiceProvider) {
+         this.afAuth.authState.subscribe((auth) => {
+      this.authState  = auth;
+    });
         this.auth = this.authService.authenticated;
-        //this.user = this.afAuth.authState
-        // ponizej wywala blad ze nie ma uid
         this.currentUser = this.afAuth.auth.currentUser;
-        this.userId = this.currentUser.uid;
+        this.userId = this.authService.currentUserId;
         console.log("this.this.userId musi byc -------------------------------------   " + this.userId);
+
         this.pozycje = afDb.list('/userProfile/' + this.userId + '/listaPozycji', {
             query: {
                 limitToLast: 24
@@ -62,42 +65,20 @@ export class PracaServiceProvider {
     }
 
 
-
-
-    // getPozycja(pozycjaId: string): FirebaseObjectObservable<any> {
-    //     return this.pozycjaDetail = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + pozycjaId);
-    // }
-
     getPozycja(id: string): FirebaseObjectObservable<any> {
         return this.pozycjaDetail = this.afDb.object('/userProfile/' + this.userId + '/listaPozycji' + id);
     }
 
     getPozycje() {
-        //return this.afDb.list('/userProfile/' + this.currentUser + '/listaPozycji/');
         return this.pozycje;
-
     }
+
     getNaddatki() {
         return this.naddatki;
     }
     getNaddatek(id: string) {
         return this.naddatekDetail = this.afDb.object('/userProfile/' + this.userId + '/naddatki' + id);
     }
-    // pokaPozycje(): Promise<any> {
-    //     return new Promise((resolve, reject) => {
-    //         firebase.database().ref('/userProfile')
-    //             .child(firebase.auth().currentUser.uid)
-    //             .on('value', data => {
-    //                 resolve(data.val());
-    //             });
-    //     });
-    // }
-
-
-
-    // get GetListaPozycji() {
-    //     return this.pozycje;
-    // }
 
     savePozycja(wll, l1, m, nici, auf, ilosc) {
         this.pozycje.push({
@@ -108,7 +89,6 @@ export class PracaServiceProvider {
             auf: auf,
             ilosc: ilosc,
             date: new Date().toISOString()
-            //timestamp: moment().format()
         });
     }
 
@@ -121,11 +101,8 @@ export class PracaServiceProvider {
             auf: auf,
             ilosc: ilosc,
             date: new Date().toISOString()
-            //timestamp: new Date().toISOString()
         }).then(nowaPozycja => {
-            //console.log('Zapisana pozycja' + wll, l1, m, nici, auf, ilosc);
             console.log("modal dodaj pozycje: nowaPozycja  " + nowaPozycja);
-            //this.navCtrl.push('PracaPage');
         }, error => {
             console.log("zapiszPozycje()  " + error);
         });
@@ -174,10 +151,8 @@ export class PracaServiceProvider {
             date: new Date().toISOString(),
             idPozycji: keyS
         }).then((dane) => {
-
             console.log(" -- dane.key to beedzie key dodawanego naddatku ? :) " + dane.key);
             console.log(" keyS to bedzie key pozycji  " + keyS);
-
             this.pozycje.update(keyS, {
                 dateUpdate: new Date().toISOString(),
                 idN: dane.key
@@ -186,20 +161,13 @@ export class PracaServiceProvider {
             }).catch((error) => {
                 console.log("błąd addNaddDetailS 1:  " + error);
             });
-
-
         }).catch((error) => {
             console.log("błąd addNaddDetailS 2:  " + error);
         });
-
-
-
     }
 
     updateNaddatek(id, data) {
         console.log("updateNaddatek jest id? " + id);
-
-
         this.naddatki.update(id, {
             wll: data.wll,
             l1: data.l1,
@@ -210,7 +178,6 @@ export class PracaServiceProvider {
 
     updatePozycja(id, data) {
         console.log("updatePozycja jest id? " + id);
-
         this.pozycje.update(id, {
             wll: data.wll,
             l1: data.l1,
@@ -220,6 +187,29 @@ export class PracaServiceProvider {
             ilosc: data.ilosc,
             dateUpdate: new Date().toISOString()
         });
+    }
+
+    addNoteS(id, data) {
+        this.pozycja = this.afDb.object('/userProfile/' + this.userId + '/listaPozycji/' + id)
+       // this.afDb.object('/userProfile/' + this.userId + '/listaPozycji/' + id).update({
+    //   this.afDb.list('/userProfile/' + this.userId + '/listaPozycji/' + id).update({
+    //         note : note
+    //     }).catch( err => {
+    //         console.log(err);
+    //     });
+    this.pozycja.update({
+        note: data.note,
+        dateUpdate: new Date().toISOString()
+    });
+
+
+
+        // console.log("addNoteS jest id? " + id);
+
+        // this.pozycje.update(id, {
+        //     note: data.note,
+        //     dateUpdate: new Date().toISOString()
+        // });
     }
 
     removeNaddatek(naddatekId: string): firebase.Promise<any> {

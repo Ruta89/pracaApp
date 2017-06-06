@@ -321,7 +321,9 @@ export class PracaPage {
     loading.present();
 
     if (this.pracaService.pozycje) {
-      loading.dismiss();
+      setTimeout(() => loading.dismiss()
+        , 500);
+      
     } else {
       console.log('listaPozycji nie zostala zaladowana');
     }

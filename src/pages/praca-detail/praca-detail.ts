@@ -57,13 +57,14 @@ export class PracaDetailPage {
     idNid: any;
     timestamp: any;
     dateUpdate: any;
+    nadList: any;
     constructor(public authService: AuthServiceProvider, public afAuth: AngularFireAuth, public afDb: AngularFireDatabase, public navCtrl: NavController, public navParams: NavParams, public pracaService: PracaServiceProvider, public alertCtrl: AlertController) {
         this.idID = this.navParams.get('id');
 
-        this.currentUser = this.afAuth.auth.currentUser.uid;
+        this.currentUser = this.authService.currentUserId;
         this.userProf = afDb.list('/userProfile/' + this.currentUser);
         this.lp = this.afDb.list('/listaPozycji/');
-
+        this.nadList = afDb.list('/userProfile/' + this.currentUser + '/naddatki/');
         this.pozLin = afDb.list('/userProfile/' + this.currentUser + '/listaPozycji/');
         // this.pozLin2 = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/');
         this.item = afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idID, { preserveSnapshot: true });
@@ -75,37 +76,19 @@ export class PracaDetailPage {
     }
 
     ionViewDidLoad() {
-
+        console.log('ionViewDidLoad PracaDetailPage');
         if (this.data.idN) {
             this.idNid = this.data.idN;
-            console.log("jest idN this.idN  " + this.idNid + "  jest idN this.data.idN  " + this.data.idN);
+            console.log("jest idN this.idN  " + this.idNid);
             this.naddatekP = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idNid, { preserveSnapshot: true });
             this.naddatekP.subscribe(snapshot => {
-                console.log(snapshot.val());
                 this.dataND = snapshot.val();
                 this.keyN = snapshot.key;
-            });
-            if (this.data.idN) {
-                this.idNid = this.data.idN;
-                console.log("jest idN this.idN  " + this.idNid + "  jest idN this.data.idN  " + this.data.idN);
-                this.naddatekP = this.afDb.object('/userProfile/' + this.currentUser + '/listaPozycji/' + this.idNid, { preserveSnapshot: true });
-                this.naddatekP.subscribe(snapshot => {
-                    console.log(snapshot.val());
-                    this.dataND = snapshot.val();
-                    this.keyN = snapshot.key;
-                });
-                console.log(this.dataND);
-                console.log("this.naddatekP  " + this.naddatekP);
-            } else {
-                console.log("niema idN");
-            }
 
+            });
         } else {
             console.log("niema idN");
         }
-
-
-        console.log('ionViewDidLoad PracaDetailPage');
 
         // ustawianie tolerancji
         this.proc = (0.01 * this.data.l1); // 0.02
@@ -126,6 +109,20 @@ export class PracaDetailPage {
             this.licz = (this.data.l1 * 1) * 20;
         } else {
             console.log("l1 to nie 5 - 8");
+        }
+        // 12 T  28m 6 szpul 132
+        if (this.data.wll == 12) {
+            this.licz = (this.data.l1 * 1) * 28;
+
+        } else {
+            console.log("wll to nie 12");
+        }
+        // 15 T  36m 6 szpul 132
+        if (this.data.wll == 15) {
+            this.licz = (this.data.l1 * 1) * 36;
+
+        } else {
+            console.log("wll to nie 12");
         }
 
 
@@ -187,40 +184,6 @@ export class PracaDetailPage {
         prompt.present();
     }
 
-    addNad(keyS, data) {
-        let prompt = this.alertCtrl.create({
-            title: 'keyS to id: poz ' + keyS + ' Wpisz naddatek wll: ' + data.wll + ', l1: ' + data.l1,
-            inputs: [
-                {
-                    name: 'maszyna',
-                    type: 'text',
-                    value: data.maszyna
-                },
-                {
-                    name: 'naddatek',
-                    type: 'number',
-                    value: data.naddatek
-                }
-            ],
-            buttons: [
-                {
-                    text: 'Anuluj',
-                    handler: (data) => {
-                        console.log('Anulowales dodanie naddatku' + data);
-                    }
-                },
-                {
-                    text: 'Zapisz',
-                    handler: (data) => {
-                        this.pracaService.updateNaddatek(keyS, data);
-                        return data.idN;
-                    }
-                }
-            ]
-        });
-        prompt.present();
-    }
-
     updatePozycja(keyS, data) {
         let prompt = this.alertCtrl.create({
             title: 'Update  ' + keyS + ' ' + data.wll + '  ' + data.l1,
@@ -275,6 +238,39 @@ export class PracaDetailPage {
         });
         prompt.present();
     }
+    addNote(keyS, data) {
+        let prompt = this.alertCtrl.create({
+            title: 'Dodaj notatkę do  '  + keyS,
+            inputs: [
+                {
+                    name: 'note',
+                    type: 'text',
+                    value: data.note
+                },
+            ],
+            buttons: [
+                {
+                    text: 'Anuluj',
+                    handler: data => {
+                        console.log('Anulowales addNote');
+                    }
+                },
+                {
+                    text: 'Zapisz',
+                    handler: (data) => {
+                        this.pracaService.addNoteS(keyS, data);
+                        console.log(" keyS czyli id addNote " + keyS);
+                        console.log("alert addNote pracaDetail data.note: " + data.note);
+                        console.log("alert addNote pracaDetail data: " + data);
+                    }
+                }
+            ]
+        });
+        prompt.present();
+    }
+
+  
+
 }
 
 

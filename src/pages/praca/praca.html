@@ -37,7 +37,7 @@
         </ion-item>
       </div>
       <div padding>
-        <button ion-button color="primary" type="submit" (click)="zapiszPozycje(wll, l1, m, nici, auf, ilosc)" [disabled]="formGroupDodajPozycje.pristine"
+        <button ion-button color="primary" type="submit" (click)="zapiszPozycje(wll, l1, m, nici, auf, ilosc)" [disabled]="formGroupDodajPozycje.status == 'INVALID'"
           block>Zapisz</button>
       </div>
     </form>
@@ -132,7 +132,8 @@
             <td> <span>{{naddatek.l1}}</span></td>
             <td> <span>{{naddatek.maszyna}}</span></td>
             <td> <span>{{naddatek.mojNaddatek}}</span></td>
-            <td> <span>{{naddatek.timestamp  | amDateFormat: 'HH:mm DD-MM' }}</span></td>
+            <td> <span *ngIf="naddatek.timestamp">{{naddatek.timestamp  | amDateFormat: 'HH:mm DD-MM' }}</span>
+                <span *ngIf="naddatek.date">{{naddatek.date  | amDateFormat: 'HH:mm DD-MM' }}</span></td>
           </tr>
         </tbody>
       </table>
