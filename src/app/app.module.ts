@@ -1,3 +1,4 @@
+import { HomePage } from './../pages/home/home';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -22,6 +23,7 @@ import { ZoomableImage } from 'ionic-gallery-modal';
 @NgModule({
   declarations: [
     MyApp,
+    HomePage,
     GalleryModal,
     ZoomableImage
   ],
@@ -39,6 +41,7 @@ import { ZoomableImage } from 'ionic-gallery-modal';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    HomePage,
     GalleryModal
   ],
   providers: [

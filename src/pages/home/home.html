@@ -1,20 +1,18 @@
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="primary" >
     <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
+     <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
-<ion-content padding>
-  <p>Dzisiaj jest: {{dateNow | date:"HH:mm dd.MM.yy"}}</p>
-  <div>
-
-    <p>Nazwa: {{ displayName }}</p>
+<ion-content>
+    
+  <div class="wrapper">
+    <div class="wiadomosc">
+      <p>Nazwa: {{ displayName }}</p>
+       <p>Dzisiaj jest: {{dateNow | date:"HH:mm dd.MM.yy"}}</p>
+      <button ion-button secondary menuToggle>Wysuń Menu</button>
+    </div>
   </div>
-  <button ion-button secondary menuToggle>Wysuń Menu</button>
 </ion-content>

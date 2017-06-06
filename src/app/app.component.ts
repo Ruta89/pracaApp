@@ -1,3 +1,4 @@
+import { HomePage } from './../pages/home/home';
 import { AuthServiceProvider } from './../providers/auth-service/auth-service';
 
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -23,7 +24,7 @@ export class MyApp {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.currentUser = user.uid;
-        this.rootPage = 'HomePage';
+        this.rootPage = HomePage;
       } else {
         this.rootPage = 'LoginPage';
       }
@@ -33,9 +34,10 @@ export class MyApp {
     this.initializeApp();
 
     this.pages = [
-      { title: 'Home', component: 'HomePage' },
+      { title: 'Home', component: HomePage },
       { title: 'Praca', component: 'PracaPage' },
-      { title: 'Galeria', component: 'GalleryPage' }
+      { title: 'GaleriaW', component: 'GalleryPage' },
+       { title: 'PhotoN', component: 'PhotoNPage' }
     ];
 
 
