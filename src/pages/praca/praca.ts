@@ -94,10 +94,10 @@ export class PracaPage {
     this.formGroupDodajPozycje = this.formBuilder.group({
       wll: ['', Validators.required],
       l1: ['', Validators.required],
-      m: ['', Validators.required],
-      nici: ['', Validators.required],
-      auf: ['', Validators.required],
-      ilosc: ['', Validators.required]
+      m: '',
+      nici: '',
+      auf: '',
+      ilosc: ''
     });
   }
 
