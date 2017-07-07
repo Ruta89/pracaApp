@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar color="zielony">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>PhotoN</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ul *ngFor="let photo of photosArray; let i = index">
+      <li *ngIf="photo?.url">
+        <img (click)="otworz(photo.id)" src="assets/images/photoN/small/{{photo.id}}.jpg" alt="{{photo.title}}" />
+      </li>
+    </ul>
+
+</ion-content>

@@ -35,7 +35,8 @@ export class MyApp {
     this.pages = [
       { title: 'Home', component: 'HomePage' },
       { title: 'Praca', component: 'PracaPage' },
-      { title: 'Galeria', component: 'GalleryPage' }
+      { title: 'Waga', component: 'GalleryPage' },
+	  { title: 'Naddatki', component: 'PhotoNPage' }
     ];
 
 

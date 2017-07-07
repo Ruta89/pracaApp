@@ -1,14 +1,23 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="zielony">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>Galeria</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <h2>Przykład użycia</h2>
 
   <p>Planuje dodac tu galerie wszystkich zdjec (naddatkow, itp z pracy).</p>
 
-  <button ion-button (click)="openModal()">Otwórz</button>
+  <div>
+    <ul *ngFor="let waga of wagiArray; let i = index">
+      <li *ngIf="waga?.url">
+        <img (click)="otworz(waga.id)" src="assets/images/wagi/small/{{waga.id}}t.jpg" alt="{{waga.title}}" />
+      </li>
+    </ul>
+  </div>
 
 </ion-content>
