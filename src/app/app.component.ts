@@ -23,7 +23,7 @@ export class MyApp {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.currentUser = user.uid;
-        this.rootPage = 'HomePage';
+        this.rootPage = 'PracaPage';
       } else {
         this.rootPage = 'LoginPage';
       }

@@ -189,7 +189,7 @@ export class PracaDetailPage {
 
     addNad(keyS, data) {
         let prompt = this.alertCtrl.create({
-            title: 'keyS to id: poz ' + keyS + ' Wpisz naddatek wll: ' + data.wll + ', l1: ' + data.l1,
+            title: 'Wpisz naddatek wll: ' + data.wll + ', l1: ' + data.l1,
             inputs: [
                 {
                     name: 'maszyna',
@@ -222,9 +222,11 @@ export class PracaDetailPage {
     }
 
     updatePozycja(keyS, data) {
+        console.log('zmienic z alert na modal');
         let prompt = this.alertCtrl.create({
-            title: 'Update  ' + keyS + ' ' + data.wll + '  ' + data.l1,
+            title: 'Update WLL: ' + data.wll + ',  L1: ' + data.l1+ ' ',
             inputs: [
+
                 {
                     name: 'wll',
                     type: 'text',
@@ -243,7 +245,7 @@ export class PracaDetailPage {
                 },
                 {
                     name: 'nici',
-                    type: 'number',
+                    type: 'text',
                     value: data.nici
                 },
                 {
@@ -268,7 +270,7 @@ export class PracaDetailPage {
                     text: 'Zapisz',
                     handler: data => {
                         this.pracaService.updatePozycja(keyS, data);
-                        console.log(" keyS czyli id updatePozycja " + keyS);
+                        console.log(" updatePozycja data" + JSON.stringify(data));
                     }
                 }
             ]
