@@ -17,7 +17,7 @@ export class MyApp {
   rootPage: any;
   userId: any;
   pages: Array<{ title: string, component: any }>;
-  currentUser
+  currentUser;
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public afAuth: AngularFireAuth, public authService: AuthServiceProvider) {
 
     this.afAuth.authState.subscribe((user) => {

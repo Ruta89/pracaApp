@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>DetailPozycja</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+
+
+  <ion-item>
+    Wll: {{value.wll}}
+  </ion-item>
+  <ion-item>
+    L1: {{value.l1}}
+  </ion-item>
+  <ion-item>
+    licznik: {{value.licznik}}
+  </ion-item>
+  <ion-item>
+    auf: {{value.auf}}
+  </ion-item>
+  <ion-item *ngIf="value.nici[0]">
+    dtex {{value.nici[0].partia}} szt: {{value.nici[0].ilosc}}
+    <!-- <span *ngIf="value.nici[1]"><br>    dtex  {{value.nici[1].partia}} szt: {{value.nici[1].ilosc}}</span> -->
+  </ion-item>
+  <ion-item>
+    szt: {{value.szt}}
+  </ion-item>
+  <ion-item>
+    czas: {{value.czas}}
+  </ion-item>
+  <button ion-button color="primary" (click)="addNote()">addNote</button>
+
+  <button ion-button color="primary" (click)="updatePozycja(value.$key, value)">update</button>
+</ion-content>
