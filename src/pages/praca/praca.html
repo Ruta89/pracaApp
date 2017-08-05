@@ -7,7 +7,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-
+<button ion-button color="primary"  (click)="test()">Test</button>
   <div *ngIf="jestForm">
     <form [formGroup]="formGroupDodajPozycje" novalidate>
       <div class="form-group">
@@ -35,32 +35,21 @@
           <ion-label floating>Sztuk</ion-label>
           <ion-input type="number" [(ngModel)]="ilosc" formControlName="ilosc" name="ilosc"></ion-input>
         </ion-item>
-      </div>
-      <div padding>
-        <button ion-button color="primary" type="submit" (click)="zapiszPozycje(wll, l1, m, nici, auf, ilosc)" [disabled]="formGroupDodajPozycje.pristine"
+        <ion-item>
+          <ion-label floating>Czas</ion-label>
+          <ion-input type="number" [(ngModel)]="czas" formControlName="czas" name="czas"></ion-input>
+        </ion-item>
+        <button ion-button color="primary" type="submit" (click)="zapiszPozycje(formGroupDodajPozycje.value)" [disabled]="!formGroupDodajPozycje.valid"
           block>Zapisz</button>
       </div>
     </form>
-
-
-
     <p>
-      <!--<ion-badge item-right>{{ formGroupDodajPozycje.status | json }}</ion-badge>
-    <ion-badge item-right *ngIf="formGroupDodajPozycje.valid" color="primary">{{ formGroupDodajPozycje.status | json }}</ion-badge>-->
       <ion-badge item-right *ngIf="formGroupDodajPozycje.status == 'VALID'" color="primary">{{ formGroupDodajPozycje.status | json }}</ion-badge>
       <ion-badge item-right *ngIf="formGroupDodajPozycje.status == 'INVALID'" color="danger">{{ formGroupDodajPozycje.status | json }}</ion-badge>
       {{ formGroupDodajPozycje.value | json }}
     </p>
     <button ion-button block *ngIf="przyciskZamknij" (click)="zamknijForm()">Zamknij</button>
   </div>
-
-
-
-  <!--<ion-buttons>
-    <button ion-button (click)="addNaddatek()">Dadaj Naddatek </button>
-    <button ion-button (click)="otworzPozycje()">Otworz pozycje</button>
-  </ion-buttons>-->
-
   <div padding>
     <ion-segment [(ngModel)]="segmentPraca">
       <ion-segment-button value="pozycje">
@@ -85,28 +74,21 @@
               <th>Nici</th>
               <th>Zlecenie</th>
               <th>Ilosć</th>
+              <th>Czas</th>
               <th>Data</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let pozycja of pozycje | async" (click)="openDetail(pozycja?.$key)">
-              <!--(click)="showOptionslistaPozycji(pozycja.$key, pozycja.auf)">-->
-
+            <tr *ngFor="let pozycja of pozycje | async" (click)="openDetail(pozycja)">
               <td> <span>{{pozycja.wll}}</span> </td>
-
               <td> <span>{{pozycja.l1}} </span> </td>
-
-
               <td> <span>{{pozycja.m}} </span> </td>
-
               <td> <span>{{pozycja.nici}}</span></td>
-
-
               <td> <span>{{pozycja.auf}}</span></td>
-
-
               <td> <span>{{pozycja.ilosc}}</span></td>
+              <td> <span>{{pozycja.czas}}</span></td>
               <td *ngIf="pozycja.timestamp"> <small>{{pozycja.timestamp | amDateFormat: 'HH:mm' }}</small></td>
+              <td *ngIf="pozycja.fireTimestamp"><small>{{pozycja.fireTimestamp | date:"HH:mm"}}</small></td>
               <td *ngIf="pozycja.date"> <small>{{pozycja.date | amDateFormat: 'HH:mm' }}</small></td>
             </tr>
           </tbody>
@@ -127,23 +109,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let naddatek of naddatki | async" (click)="showOptions(naddatek.$key, naddatek)">
+          <tr *ngFor="let naddatek of naddatki | async" (click)="openDetailNaddatek(naddatek)">
             <td> <span>{{naddatek.wll}}</span></td>
             <td> <span>{{naddatek.l1}}</span></td>
             <td> <span>{{naddatek.maszyna}}</span></td>
             <td> <span>{{naddatek.mojNaddatek}}</span></td>
-            <td> <span>{{naddatek.timestamp  | amDateFormat: 'HH:mm DD-MM' }}</span></td>
+            <td> <span>{{naddatek.fireTimestamp  | amDateFormat: 'HH:mm DD-MM' }}</span></td>
+            <td *ngIf="naddatek.fireTimestamp"><small>{{naddatek.fireTimestamp | date:"HH:mm"}}</small></td>
           </tr>
         </tbody>
       </table>
 
     </ion-list>
   </div>
-
-
-
-
-
-
 
 </ion-content>
