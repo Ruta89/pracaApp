@@ -1,0 +1,24 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Zdjęcia</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+<ion-card *ngFor="let item of items | async">
+
+      <img [src]="'data:image/png;base64,'+item.imageData" />  
+     <!-- {{item.imageData}} -->
+
+    
+  </ion-card>
+
+  <ion-fab bottom right>
+    <button ion-fab (click)="takePhoto()">
+    <ion-icon name="camera"></ion-icon>  
+    </button>
+  </ion-fab>
+</ion-content>
