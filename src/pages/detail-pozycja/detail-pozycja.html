@@ -1,36 +1,27 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>DetailPozycja</ion-title>
+  <ion-navbar color="hcolor">
+    <ion-title>Pozycja</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
 
+  <ion-card>
+    <ion-card-content>
+      <!-- <ion-list no-lines> -->
+      <p>min: <b>{{min}}</b> max: <b>{{max}}</b> <span class="wPrawo" *ngIf="value?.fireTimestamp"> Utworzono: <strong>{{value?.fireTimestamp | date:'HH:mm dd-M' }}</strong></span></p>
+      <p> WLL: <strong>{{value?.wll}}</strong> T <span class="wPrawo" *ngIf="value?.updateDate">Modyfikow: <strong>{{value?.updateDate | date:'HH:mm dd-M'}}</strong> </span>        </p>
+      <p>L1: <strong>{{value?.l1}}</strong> m</p>
+      <p>Licz: <strong>{{value?.m}}</strong> </p>
+      <p>Nici: <strong>{{value?.nici }}</strong></p>
+      <p>Auf: <strong>{{aufFormat}}</strong> </p>
+      <p>Szt: <strong>{{value?.ilosc}}</strong></p>
+      <p> Czas: <strong>{{value?.czas}}</strong> min  Razem: <strong>{{czas | number}}</strong>g</p> 
+      <ion-textarea [(ngModel)]="note"></ion-textarea>
+      <button ion-button color="secondary" (click)="addNote(id,  note)">Dodaj notatke</button>
+      <button ion-button color="primary" (click)="updatePozycja(value?.$key, value)">Uaktualnij</button>
+      <button ion-button color="danger" (click)="usunPoz(id)">Usun</button>
+    </ion-card-content>
+  </ion-card>
 
-
-  <ion-item>
-    Wll: {{value.wll}}
-  </ion-item>
-  <ion-item>
-    L1: {{value.l1}}
-  </ion-item>
-  <ion-item>
-    licznik: {{value.licznik}}
-  </ion-item>
-  <ion-item>
-    auf: {{value.auf}}
-  </ion-item>
-  <ion-item *ngIf="value.nici[0]">
-    dtex {{value.nici[0].partia}} szt: {{value.nici[0].ilosc}}
-    <!-- <span *ngIf="value.nici[1]"><br>    dtex  {{value.nici[1].partia}} szt: {{value.nici[1].ilosc}}</span> -->
-  </ion-item>
-  <ion-item>
-    szt: {{value.szt}}
-  </ion-item>
-  <ion-item>
-    czas: {{value.czas}}
-  </ion-item>
-  <button ion-button color="primary" (click)="addNote()">addNote</button>
-
-  <button ion-button color="primary" (click)="updatePozycja(value.$key, value)">update</button>
 </ion-content>

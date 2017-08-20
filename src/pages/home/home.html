@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="hcolor" >
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -11,7 +11,7 @@
 
 
 <ion-content padding>
-  <p>Dzisiaj jest: {{dateNow | date:"HH:mm dd.MM.yy"}}</p>
+ <h2>  Dzisiaj jest:  {{dateNow | date:"HH:mm dd-MM-yy"}}</h2> 
   <div>
 
     <p>Nazwa: {{ displayName }}</p>

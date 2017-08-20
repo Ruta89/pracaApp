@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar color="hcolor">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Wagi</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <div>
+    <ul *ngFor="let waga of wagiArray; let i = index">
+      <li *ngIf="waga?.url">
+        <img (click)="openModal(i)" src="assets/images/wagi/small/{{waga.id}}t.jpg" alt="{{waga.title}}" />
+      </li>
+    </ul>
+  </div>
+</ion-content>

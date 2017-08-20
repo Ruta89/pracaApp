@@ -1,60 +1,50 @@
-import { AuthServiceProvider } from './../providers/auth-service/auth-service';
-
-import { AngularFireAuth } from 'angularfire2/auth';
+import { Observable } from 'rxjs/Observable';
+import { PracaServiceProvider } from './../providers/praca-service/praca-service';
 import { Component, ViewChild } from '@angular/core';
 import { Platform, Nav } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-//import * as firebase from 'firebase/auth';
 
 @Component({
   templateUrl: 'app.html'
 })
-
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any;
-  userId: any;
-  pages: Array<{ title: string, component: any }>;
-  currentUser;
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public afAuth: AngularFireAuth, public authService: AuthServiceProvider) {
+  pages: Array<{ title: string; component: any }>;
+  user: Observable<{
+    email: string;
+    password: string;
+  }>;
+  constructor(
+    platform: Platform,
+    public statusBar: StatusBar,
+    public splashScreen: SplashScreen,
+    pracaService: PracaServiceProvider
+  ) {
+    platform.ready().then(() => {
+      statusBar.styleDefault();
+      splashScreen.hide();
 
-    this.afAuth.authState.subscribe((user) => {
-      if (user) {
-        this.currentUser = user.uid;
-        this.rootPage = 'PracaPage';
-      } else {
-        this.rootPage = 'LoginPage';
-      }
-    });
+      pracaService.authState.subscribe(user => {
+        if (user) {
+          this.rootPage = 'PracaPage';
+        } else {
+          this.rootPage = 'LoginPage';
+        }
+      });
 
-
-    this.initializeApp();
-
-    this.pages = [
-      { title: 'Home', component: 'HomePage' },
-      { title: 'Praca', component: 'PracaPage' },
-      { title: 'Waga', component: 'GalleryPage' },
-	  { title: 'Naddatki', component: 'PhotoNPage' }
-    ];
-
-
-  }
-
-  initializeApp() {
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.pages = [
+        { title: 'Home', component: 'HomePage' },
+        { title: 'Praca', component: 'PracaPage' },
+        { title: 'Zdjecia', component: 'TakePhotoPage' },
+        { title: 'Waga', component: 'WagaPage' },
+        { title: 'Naddatki', component: 'NaddatkiPage' }
+      ];
     });
   }
-
   openPage(page) {
     this.nav.setRoot(page.component);
   }
-
-
 }
-

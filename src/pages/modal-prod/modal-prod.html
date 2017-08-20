@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar color="color2">
+    <ion-title>
+     Edytowanie
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="closeModal()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+
+
+  <form [formGroup]="form" (ngSubmit)="save(form.value)">
+
+    <ion-item-divider color="light">
+      <div>
+        Utworzono {{ productionCreated }} 
+      </div>
+    </ion-item-divider>
+
+    <ion-item>
+      <ion-label stacked>WLL:</ion-label>
+      <ion-input type="number" formControlName="wll" [(ngModel)]="productionWll"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>l1:</ion-label>
+      <ion-input type="number" formControlName="l1" [(ngModel)]="productionL1"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>licznik:</ion-label>
+      <ion-input type="number" formControlName="m" [(ngModel)]="productionLicznik"></ion-input>
+    </ion-item>
+
+      <ion-item>
+      <ion-label stacked>Nici:</ion-label>
+      <ion-input type="text" formControlName="nici" [(ngModel)]="productionNici"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>auf:</ion-label>
+      <ion-input type="number" formControlName="auf" [(ngModel)]="productionAuf"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label stacked>szt:</ion-label>
+      <ion-input type="number" formControlName="ilosc" [(ngModel)]="productionSzt"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked>czas:</ion-label>
+      <ion-input type="number" formControlName="czas" [(ngModel)]="productionCzas"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <input type="hidden" name="productionId">
+      <button ion-button block color="color2" text-center [disabled]="!form.valid"> 
+      <div *ngIf="form.valid"> 
+        valid 
+      </div>
+
+      <div *ngIf="!form.valid">
+        invalid
+      </div>
+      </button>
+    </ion-item>
+
+  </form>
+
+</ion-content>

@@ -1,0 +1,14 @@
+page-detail-pozycja {
+  ion-card-content {
+    background-color: #f2f2f2;
+    position: relative
+  }
+
+  ion-textarea {
+    background-color: #d3d3d3;
+  }
+  .wPrawo{
+     position: absolute;
+    right: 15px;
+  }
+}
