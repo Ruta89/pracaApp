@@ -1,9 +1,6 @@
 
 let photosArray: any[] = [
   {
-
-  },
-  {
     "id": 1,
     "title": "1",
     "url": "assets/images/photoN/1.jpg"
@@ -73,6 +70,16 @@ let photosArray: any[] = [
     "title": "14",
     "url": "assets/images/photoN/14.jpg"
   },
+  {
+    "id": 15,
+    "title": "tadek",
+    "url": "assets/images/photoN/15.jpg"
+  },
+  {
+    "id": 16,
+    "title": "Dluga",
+    "url": "assets/images/photoN/16.jpg"
+  }
 
 ];
 
