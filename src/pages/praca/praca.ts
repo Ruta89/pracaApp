@@ -1,11 +1,25 @@
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AuthServiceProvider } from './../../providers/auth-service/auth-service';
+import { Observable } from 'rxjs/Observable';
+// import { AngularFireAuth } from 'angularfire2/auth';
+// import { AuthServiceProvider } from './../../providers/auth-service/auth-service';
 import { PracaServiceProvider } from './../../providers/praca-service/praca-service';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, AlertController, ActionSheetController, NavParams, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import {
+  IonicPage,
+  NavController,
+  AlertController,
+  ActionSheetController,
+  NavParams,
+  ModalController,
+  LoadingController,
+  ToastController
+} from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-//import * as firebase from 'firebase/app';
-import { AngularFireDatabase, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2/database';
+import { DecimalPipe } from '@angular/common';
+import {
+  AngularFireDatabase,
+  FirebaseListObservable
+} from 'angularfire2/database';
+import * as moment from 'moment';
 class Pozycja {
   wll: number;
   l1: number;
@@ -17,30 +31,31 @@ class Pozycja {
   jestForm: boolean = false;
   przyciskDodaj: boolean = true;
   przyciskZamknij: boolean = false;
-  constructor() { }
+  constructor() {}
 }
 @IonicPage()
 @Component({
   selector: 'page-praca',
-  templateUrl: 'praca.html',
+  templateUrl: 'praca.html'
 })
 export class PracaPage {
-
   formGroupDodajPozycje: FormGroup;
-  data: any;
+  data: Date;
   listaPozycji: FirebaseListObservable<any[]>;
-  pozycje: FirebaseListObservable<any>;
-  wll: any;
+  pozycje: Observable<any[]>;
+  naddatki: Observable<any[]>;
+  wll: number;
   l1: number;
   m: any;
   nici: any;
   auf: any;
   ilosc: any;
-  naddatki: FirebaseListObservable<any[]>;
-  pozycja: Pozycja = new Pozycja;
+  czas: number;
+
+  pozycja: Pozycja = new Pozycja();
   user: any;
   toggle: boolean = true;
-  segmentPraca: string = "pozycje";
+  segmentPraca: string = 'pozycje';
   pozycjaDetail: any;
   currentUser: any;
   id: any;
@@ -49,12 +64,20 @@ export class PracaPage {
   przyciskZamknij: boolean = false;
   resoult: any;
   mojNaddatek: any;
-  date:any;
+  date: any;
   timestamp: any;
   dateNow: any;
   naddatkiP: any;
   p: any;
-  constructor(private afAuth: AngularFireAuth,
+  authenticated: any;
+  szychta: Array<any[]>;
+  robota: Array<any[][]>;
+  robota2: Array<any[]> = [];
+  kazdaszychta: any;
+  pozycjeArr: Array<any[]>;
+  value: any;
+  last24: any;
+  constructor(
     private toastCtrl: ToastController,
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -64,20 +87,21 @@ export class PracaPage {
     private alertCtrl: AlertController,
     private formBuilder: FormBuilder,
     private modalCtrl: ModalController,
-    public afDB: AngularFireDatabase,
-    public authData: AuthServiceProvider) {
-
-    this.dateNow = new Date().toISOString();
-    this.naddatki = pracaService.naddatki;
-    this.pozycje = pracaService.pozycje;
+    public afd: AngularFireDatabase
+  ) {
+    this.dateNow =  Date.now();
+    console.log('dateNow:  '+ this.dateNow);
+    this.last24 = this.dateNow - 86400000;
+    console.log('date now - 86400:  '+ this.last24);
     this.createForm();
   }
 
-  getPozycja(id: string): FirebaseObjectObservable<any> {
-    return this.pozycjaDetail = this.afDB.object('/userProfile/' + this.currentUser + '/listaPozycji/' + id);
+  getPozycje() {
+    this.pracaService.getPozycje();
   }
-  
-
+  getNaddatki() {
+    this.pracaService.getNaddatki();
+  }
   pokaForm() {
     this.jestForm = true;
     this.przyciskDodaj = false;
@@ -94,22 +118,65 @@ export class PracaPage {
     this.formGroupDodajPozycje = this.formBuilder.group({
       wll: ['', Validators.required],
       l1: ['', Validators.required],
-      m: ['', Validators.required],
-      nici: ['', Validators.required],
-      auf: ['', Validators.required],
-      ilosc: ['', Validators.required]
+      m: [''],
+      nici: [''],
+      auf: [''],
+      ilosc: [''],
+      czas: ['']
     });
   }
 
-  openDetail(id) {
-    this.navCtrl.push('PracaDetailPage', {
-      id: id
+  openDetail(pozycja) {
+    // this.navCtrl.push('PozycjaDetailPage', {
+    this.navCtrl.push('DetailPozycjaPage', {
+      pozycja: pozycja
     });
   }
 
-  zapiszPozycje(wll, l1, m, nici, auf, ilosc) {
-    this.pracaService.savePozycja(wll, l1, m, nici, auf, ilosc);
-    this.navCtrl.push('PracaPage');
+  openDetailNaddatek(naddatek) {
+    let actionSheet = this.actionSheetCtrl.create({
+      title:
+        'Wll: ' +
+        naddatek.wll +
+        ' , L1: ' +
+        naddatek.l1 +
+        ' - Co chcesz zrobić?',
+      buttons: [
+        {
+          text: 'Uaktualnij naddatek',
+          handler: () => {
+            this.updateNaddatek(naddatek.$key, naddatek);
+            console.log(
+              ' --  this.updateNaddatek(id, naddatek.wll);' +
+                naddatek.$key +
+                '  ' +
+                naddatek.wll
+            );
+          }
+        },
+        {
+          text: 'Usuń naddatek',
+          role: 'destructive',
+          handler: () => {
+            this.pracaService.removeNaddatek(naddatek.$key);
+          }
+        },
+        {
+          text: 'Anuluj',
+          role: 'cancel',
+          handler: () => {
+            // console.log('Kliknales Anuluj');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+  zapiszPozycje(value) {
+    this.pracaService.savePozycja(value).then(() => {
+      this.navCtrl.setRoot('PracaPage');
+    });
   }
 
   otworzPozycje() {
@@ -145,14 +212,19 @@ export class PracaPage {
       buttons: [
         {
           text: 'Anuluj',
-          handler: data => {
-            // console.log('Anulowales dodanie naddatku');
-          }
+          handler: data => {}
         },
         {
           text: 'Zapisz',
           handler: data => {
-            this.pracaService.zapiszNaddatek(data);
+            this.pracaService
+              .zapiszNaddatek(data)
+              .then(() => {
+                console.log('zapisz naddatek ok', data);
+              })
+              .catch(err => {
+                alert(err);
+              });
           }
         }
       ]
@@ -164,7 +236,6 @@ export class PracaPage {
     this.listaPozycji.remove(produkcjaId);
   }
 
-
   uaktualnijPozycje(produkcjaId, wll, l1, m, nici, auf, ilosc) {
     let alert = this.alertCtrl.create({
       title: 'Aktualizacja pozycji' + produkcjaId,
@@ -174,15 +245,12 @@ export class PracaPage {
           name: 'wll',
           placeholder: 'Tonaz',
           value: wll
-        },
-
+        }
       ],
       buttons: [
         {
           text: 'Anuluj',
-          handler: data => {
-            // console.log('Kliknales Anuluj uaktualnijPozycje');
-          }
+          handler: data => {}
         },
         {
           text: 'Save',
@@ -202,31 +270,32 @@ export class PracaPage {
     alert.present();
   }
 
-
   updateNaddatek(id, naddatek) {
-    console.log("-- updateNaddatek przyjmuje id: " + id + " naddatek.l1: " + naddatek.l1);
+    console.log(
+      '-- updateNaddatek przyjmuje id: ' + id + ' naddatek.l1: ' + naddatek.l1
+    );
     let prompt = this.alertCtrl.create({
       title: 'Aktualizacja danych',
       message: 'Wprowadz poprawki ',
       inputs: [
         {
           name: 'wll',
-          placeholder: "Tonaz",
+          placeholder: 'Tonaz',
           value: naddatek.wll
         },
         {
           name: 'l1',
-          placeholder: "Dlugosc",
+          placeholder: 'Dlugosc',
           value: naddatek.l1
         },
         {
           name: 'maszyna',
-          placeholder: "Maszyna",
+          placeholder: 'Maszyna',
           value: naddatek.maszyna
         },
         {
           name: 'mojNaddatek',
-          placeholder: "Naddatek",
+          placeholder: 'Naddatek',
           value: naddatek.mojNaddatek
         }
       ],
@@ -241,14 +310,13 @@ export class PracaPage {
           text: 'Zapisz',
           handler: data => {
             this.pracaService.updateNaddatek(id, data);
-            console.log(" id updateNaddatek" + id);
+            console.log(' id updateNaddatek' + id);
           }
         }
       ]
     });
     prompt.present();
   }
-
 
   showOptionslistaPozycji(produkcjaId, wll, l1, m, nici, auf, ilosc) {
     let actionSheet = this.actionSheetCtrl.create({
@@ -279,26 +347,42 @@ export class PracaPage {
     actionSheet.present();
   }
 
-
-
   showOptions(id, naddatek) {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Wll: ' + naddatek.wll + ' , L1: ' + naddatek.l1 + ' - Co chcesz zrobić?',
+      title:
+        'Wll: ' +
+        naddatek.wll +
+        ' , L1: ' +
+        naddatek.l1 +
+        ' - Co chcesz zrobić?',
       buttons: [
         {
           text: 'Uaktualnij naddatek',
           handler: () => {
             this.updateNaddatek(id, naddatek);
-            console.log(" --  this.updateNaddatek(id, naddatek.wll);" + id + '  ' + naddatek.wll);
+            console.log(
+              ' --  this.updateNaddatek(id, naddatek.wll);' +
+                id +
+                '  ' +
+                naddatek.wll
+            );
           }
         },
         {
           text: 'Usuń naddatek',
           role: 'destructive',
           handler: () => {
-            this.pracaService.removeNaddatek(id);
+            this.pracaService
+              .removeNaddatek(id)
+              .then(() => {
+                console.log('usunieto naddatek');
+              })
+              .catch(err => {
+                alert(err);
+              });
           }
-        }, {
+        },
+        {
           text: 'Anuluj',
           role: 'cancel',
           handler: () => {
@@ -312,45 +396,39 @@ export class PracaPage {
 
 
   ionViewDidLoad() {
-    // console.log('Hello Praca Page Page');
+    console.log('Hello Praca Page Page');
+  }
 
+  ionViewDidEnter() {
     let loading = this.loadingCtrl.create({
       content: 'Uzyskiwanie najnowszych wpisów ...'
     });
 
     loading.present();
+    this.pracaService.authState.subscribe(user => {
+      if (user) {
+        this.pozycje = this.pracaService.wyswietlPozycje();
+        this.naddatki = this.pracaService.wyswietlNaddatki();
 
-    if (this.pracaService.pozycje) {
-      setTimeout(() => loading.dismiss()
-        , 500);
-      
-    } else {
-      console.log('listaPozycji nie zostala zaladowana');
-    }
-
-
-  }
-
-  ionViewWillLoad() {
-    this.afAuth.authState.subscribe(data => {
-      if (data && data.email && data.uid) {
-        this.toastCtrl.create({
-          message: `Witam w APP_NAME, ${data.email}`,
+        let toast = this.toastCtrl.create({
+          message: `Witam w Stajni, ${user.email}`,
           duration: 3000
-        }).present();
+        });
+        toast.present();
+        if (this.pozycje) {
+          setTimeout(() => {
+            loading.dismiss();
+          }, 500);
+        }
       } else {
-        this.toastCtrl.create({
+        this.pozycje = null;
+        this.naddatki = null;
+        let toast = this.toastCtrl.create({
           message: `Nie autoryzowano`,
           duration: 3000
-        }).present();
-
-        // setTimeout(() => {
-        //   this.navCtrl.push('LoginPage');
-        // }, 3000);
-
+        });
+        toast.present();
       }
     });
-
   }
-
 }
