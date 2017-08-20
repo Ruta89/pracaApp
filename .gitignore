@@ -18,6 +18,12 @@ log.txt
 npm-debug.log*
 
 src/environments/
+.sourcemaps/
+yarn.lock
+package-lock.json
+resources/android/splash/
+resources/android/icon/
+
 .idea/
 .sass-cache/
 .tmp/
@@ -38,3 +44,4 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
